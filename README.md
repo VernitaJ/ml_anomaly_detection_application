@@ -35,4 +35,20 @@ The ML model design, selection, training, and evaluation were performed in this 
 
 ### 6) Anomaly Classification
 
-The selection of sliding window sizes was guided by the visualizations from the Data Analysis phase. The velocity graph showed a repetitive pattern every four minutes, leading to the selection of sliding windows of 4 and 
+The selection of sliding window sizes was guided by the visualizations from the Data Analysis phase. The velocity graph showed a repetitive pattern every four minutes, leading to the selection of sliding windows of 4 and 8 minutes. Additionally, a sliding window of 1 minute was chosen to ensure stability in velocity. For a visualization of the sliding window of 4 minutes indicating anomalous behavior, refer to Fig 12 in the prototype user interface.
+
+### 7) Testing
+
+For this phase, the author focused on the results from the Requirements phase to limitthe experiment to the expected qualities of the system. Since this implementation is a prototype, extensive testing was not performed. To simulate the implementation of an anomaly detection system, the non-functional requirements were translated into Python tests, which can be found in Appendix E. Please note that these tests were considered valid for the author to accept this phase as completed.
+
+### 8) Deployment
+
+As the system is a prototype, the deployment was simulated using Docker containers. Users can run the prototype system by utilizing the Docker containers included in the implementation, such as the data stream, hosted ML models, and data processing, machine learning, anomaly detection, and notification modules. Essentially, the prototype implementation simulates a distributed anomaly detection system.
+
+### 9) Maintenance
+
+To finalize the system implementation and simulate a maintenance task, the author utilized the functionality on the UI to retrain the ML model for the velocity dataset. A new dataset was uploaded, and the model underwent retraining. The output on the UI displayed the current model's accuracy metrics compared to the retrained ML model. The retrained model showed lower performance, leading to the decision not to replace the current model. For the output of the UI, refer to Fig 13.
+
+Since Maintenance was the last phase in the system, and with no dependencies, the author assumes that this phase will be continuously considered. Therefore, the simulation implementation phase was completed.
+
+
