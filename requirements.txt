@@ -1,0 +1,13 @@
+dash==2.9.1
+joblib==1.2.0
+kafka_python==2.0.2
+keras==2.10.0
+matplotlib==3.6.0
+numpy==1.23.5
+pandas==1.5.0
+plotly==5.12.0
+Requests==2.31.0
+scikit_learn==1.1.2
+scipy==1.9.1
+seaborn==0.11.2
+tensorflow==2.10.1
