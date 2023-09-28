@@ -27,7 +27,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from predictions import *
-plotpoints = 720
+plotpoints = 1000
 
 
 # import metrics
@@ -75,7 +75,7 @@ def display_page(pathname):
 # Define the layout for the Home page
 home_layout = html.Div([
     # Page heading
-    html.H1('Anomaly Detection System'),
+    html.H3('Anomaly Detection System'),
     
     # Tabs for different data streams
     dcc.Tabs(id='tabs', value='velocity_calc', children=[
@@ -92,7 +92,7 @@ home_layout = html.Div([
         interval=1000,  # Update every 1 second
         n_intervals=plotpoints
     ),
-], style={'font-family': 'Arial, Helvetica, sans-serif', 'padding': '10px', 'width': '100%'})
+], style={'font-family': 'Arial, Helvetica, sans-serif', 'font-size': '15px', 'padding': '10px', 'width': '100%'})
 
 data = pd.DataFrame(columns=['dataset','window_start', 'window_end', 'comment', 'freq', 'exp_mean', 'window_mean', 'exp_rmse', 'window_rmse'])
 
@@ -100,7 +100,7 @@ data = pd.DataFrame(columns=['dataset','window_start', 'window_end', 'comment', 
 # Define the layout for the Notification page
 notification_layout = html.Div([
     # Page heading
-    html.H1('Anomaly Notifications'),
+    html.H3('Anomaly Notifications'),
     dash_table.DataTable(id='table', columns=[{"name": i.capitalize(), "id": i} for i in data.columns], style_table={'height': 500, 'width': 1400, 'overflowY': 'scroll'}, style_cell={'textAlign': 'left', 'width': '100px', 'height': 'auto', 'minWidth': '100px', 'maxWidth': '100px', 'whiteSpace': 'normal'}, style_header={'backgroundColor': 'rgb(230, 230, 230)', 'fontWeight': 'bold'}, style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': 'rgb(248, 248, 248)'}]),
     # Table showing anomalous points and their severity
     # html.Table(id='anomaly_table', children=[
@@ -123,7 +123,7 @@ notification_layout = html.Div([
 
 # Define the model page layout
 vel_model_layout = html.Div([
-    html.H2('Machine Learning Models'),
+    html.H3('Machine Learning Models'),
     html.Div([
     html.H3('Velocity Model'),
     html.H4('Current Metrics'),
@@ -154,7 +154,7 @@ vel_model_layout = html.Div([
 ])
 
 torque_model_layout = html.Div([
-    html.H2('Machine Learning Models'),
+    html.H3('Machine Learning Models'),
     html.Div([
         html.H3('Torque Model'),
         html.H4('Current Metrics'),
@@ -240,7 +240,7 @@ torque_model_layout = html.Div([
 
 
 # motor_temp_model_layout = html.Div([
-#     html.H2('Machine Learning Models'),
+#     html.H3('Machine Learning Models'),
 #     html.Div([
 #         html.H3('Motor Temperature Model'),
 #         html.H4('Current Metrics'),
@@ -326,7 +326,7 @@ torque_model_layout = html.Div([
     
 
 # pos_model_layout = html.Div([
-#     html.H2('Machine Learning Models'),
+#     html.H3('Machine Learning Models'),
 #     html.Div([
 #         html.H3('Position Model'),
 #         html.H4('Current Metrics'),
@@ -789,9 +789,10 @@ def update_graph(tab, datatoshow):
     # #change this to fetch from the database
     anomalies = pd.read_csv('anomalies.csv')
     anomalies = anomalies[anomalies['dataset'] == tab]
+    anomalies['window_end'] = pd.to_datetime(anomalies['window_end'])
     # read last line
     anomalies = anomalies.tail(1)
-    if not anomalies.empty:
+    if not anomalies.empty and (anomalies['window_end'] > mergedStuff['time'][0]).bool():
         fig.add_vrect(x0=anomalies['window_start'].values[0], x1=anomalies['window_end'].values[0], fillcolor="salmon", opacity=0.5, layer="below", line_width=0)
     # print(anomalies['window_start'].values[0], anomalies['window_end'].values[0])
     # if not anomalies.empty:
@@ -818,7 +819,7 @@ def check_anomalies_windows(window, tab):
     top_freq, count = get_frequency(window[tab])
 
     # check if frequency is within 0.1 of the top frequency
-    if not ((top_freq > (freq - 0.01)) and (top_freq < (freq + 0.01)) and (count >= window.shape[0]*0.28)):
+    if not ((top_freq > (freq - 0.01)) and (top_freq < (freq + 0.01)) and (count >= window.shape[0]*0.104)):
         # get the mean of the window
         window_mean = np.mean(window[tab])
         # get the mean of the actual vs predicted
@@ -875,7 +876,9 @@ def get_frequency(window):
 def update_anomaly_window(window, tab, top_freq, exp_mean, window_mean, exp_rmse, window_rmse, comment):
     window_start = window.head(1)['time'].values[0]
     window_end = window.tail(1)['time'].values[0]
+    print()
     anomaly = pd.DataFrame([{'dataset': tab, 'window_start': window_start, 'window_end': window_end,'comment':comment, 'freq' : top_freq, 'exp_mean': exp_mean, 'window_mean': window_mean, 'exp_rmse': exp_rmse, 'window_rmse': window_rmse}])
+    print(anomaly)
     anomaly.to_csv('anomalies.csv', mode='a', index=False, header=False)
 
 # Define the callback to update the anomaly table based on the data in the database
@@ -901,7 +904,7 @@ def update_anomaly_table(n):
     data['window_end'] = pd.to_datetime(data['window_end'])
     lasttime = data.tail(1)['window_end'].values[0]
     data = data[data['window_start'] > (lasttime - pd.Timedelta(minutes=4))]
-    data = data[data['window_rmse']> 19]
+    # data = data[data['window_rmse']> 19]
 
     end_time = time.time()
 
@@ -916,4 +919,4 @@ def update_anomaly_table(n):
 app.config['suppress_callback_exceptions'] = True
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, host='0.0.0.0', port=8050)

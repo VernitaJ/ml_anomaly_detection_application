@@ -17,3 +17,10 @@ Total params: 21,003
 Trainable params: 21,003
 Non-trainable params: 0
 _________________________________________________________________
+
+
+Quality	Non-functional Requirement
+Correctness:	1. The model should show an RMSE of less than 0.5. (False Positive Rate)
+Performance:	2. The system should detect anomalies within a maximum response time of 500 milliseconds. (Latency)
+Availability:	3. The system should have a maximum allowable downtime of 1 hour per month. (Downtime)
+Modifiability:	4. The system should allow for the retraining of a ML model within a day. (ML Model update)
