@@ -127,7 +127,7 @@ def train_model(model, X_train, y_train, X_val, y_val, dataset):
             error_msg = f"Function: Training model, Error: {str(e)}"
             print(error_msg)
             logging.error(error_msg)
-    return history
+    return history, model
 
 def plot_loss(history):
     # Plot loss
@@ -164,6 +164,7 @@ def save_metrics(y_test, test_predict, dataset, file='performance_metrics.csv'):
     from sklearn.metrics import mean_absolute_error
     try:
         print(y_test.max(), test_predict.max())
+        print('shapes: ', y_test.shape, test_predict.shape)
 
         # Calculate MAD performance metrics
         mad_test = np.mean(np.abs(y_test.reshape(-1, 1) - test_predict))
@@ -190,7 +191,6 @@ def save_metrics(y_test, test_predict, dataset, file='performance_metrics.csv'):
     except ValueError as e:
             error_msg = f"Function: Saving Metrics, Error: {str(e)}"
             print(error_msg)
-            logging.error(error_msg)
 
 def plot_prediction(y_test, test_predict, dataset):
     try:
@@ -341,7 +341,7 @@ def build_model(dataset, time_step=20, offset=0, data=None, model_specs=None):
     model = create_model(time_step, model_specs)
     
     # Train the model and save the history
-    history = train_model(model, X_train, y_train, X_val, y_val, dataset)
+    history, model = train_model(model, X_train, y_train, X_val, y_val, dataset)
 
     #save model
     model.save('./dir/models_new/'+ dataset)
@@ -354,13 +354,13 @@ def build_model(dataset, time_step=20, offset=0, data=None, model_specs=None):
     test_predict, y_test = predict(model, X_test, y_test, scaler)
 
     # Calculate RMSE performance metrics
-    save_metrics(y_test, test_predict, dataset, './dir/models_new/performance_metrics.csv')
+    # save_metrics(y_test, test_predict, dataset, './dir/models_new/performance_metrics.csv')
 
     # Plot test prediction
-    plot_prediction(y_test, test_predict, dataset)
+    # plot_prediction(y_test, test_predict, dataset)
 
     # show anomalies in test data
-    show_anomalies(y_test, test_predict, dataset)
+    # show_anomalies(y_test, test_predict, dataset)
 
     return 'Model for ' + dataset  + ' built and saved'
 

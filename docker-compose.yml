@@ -29,15 +29,15 @@ services:
       KAFKA_CREATE_TOPICS: "torque:1:1,velocity:1:1"
     volumes:
      - /var/run/docker.sock:/var/run/docker.sock
-  run_ui:
-    build:
-      context: .
-      dockerfile: Dockerfile_1
-    depends_on:
-      - tfserving
-      - kafka
-      - zookeeper
-    ports:
-      - 8050:8050
-      - 9093:9093
-    command: ["python", "ui_dashboard.py", "data_stream.py"]
+  # run_ui:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile_1
+  #   depends_on:
+  #     - tfserving
+  #     - kafka
+  #     - zookeeper
+  #   ports:
+  #     - 8050:8050
+  #     - 9093:9093
+  #   command: ["python", "ui_dashboard.py", "data_stream.py"]

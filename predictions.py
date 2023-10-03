@@ -13,7 +13,8 @@ def prediction(data, dataset, model):
     scaler = None
     if os.path.exists('./dir/scalers/'+dataset+'_scaler.save'):
         scaler = joblib.load('./dir/scalers/'+dataset+'_scaler.save')
-    data_scaled = scaler.transform(data[dataset].values.reshape(-1, 1))
+        data_scaled = scaler.transform(data[dataset].values.reshape(-1, 1))
+    else: data_scaled = data[dataset].values.reshape(-1, 1)
           
     req = json.dumps({"signature_name": "serving_default", "instances": [data_scaled.tolist()]})
     headers = {"content-type": "application/json"}
@@ -28,4 +29,5 @@ def prediction(data, dataset, model):
 
     # add a prediction df
     add_prediction = pd.DataFrame([{'predicted':prediction[0][0], 'time':time_entry}])
+    print('adding prediction to')
     add_prediction.to_csv('predictions_'+ dataset + '.csv', mode='a', index=False, header=False)

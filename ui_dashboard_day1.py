@@ -745,7 +745,7 @@ def create_ml_model(n_clicks, input_sample, timestep, contents, filename):
 def update(n, tab, graph):
     # if not graph:
     # read last n values from the selected dataset
-    data = pd.read_csv(tab+'_streamed.csv')
+    data = pd.read_csv('./day1/' + tab + '_streamed.csv')
     metrics_dataset = metrics[metrics['dataset'] == tab]
     data.columns = [tab, 'time']
     data['time'] = pd.to_datetime(data['time'])
@@ -757,7 +757,7 @@ def update(n, tab, graph):
     return update_graph(tab, datatoshow)
 
 def update_graph(tab, datatoshow):
-    predictions = pd.read_csv('predictions_'+ tab +'.csv')
+    predictions = pd.read_csv('./day1/predictions_'+ tab +'.csv')
     predictions.columns = ['predicted', 'time']
     predictions['time'] = pd.to_datetime(predictions['time'])
     mergedStuff = pd.merge(predictions, datatoshow, on=['time'], how='inner')
